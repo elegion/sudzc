@@ -164,7 +164,16 @@
 			}
 		}
 	} else {
-		CXMLNode* element = [[Soap getNode: [doc rootElement] withName: @"Body"] childAtIndex:0];
+				//TODO: use soap evenlope scheme + name, instead of localName "Body" hack in Soap.m
+
+        CXMLNode* body = [Soap getNode: [doc rootElement] withName: @"Body"];
+        CXMLNode* element;
+        for (CXMLNode *bodyChild in body.children) {
+            if (bodyChild.kind == CXMLElementKind) {
+                element = bodyChild;
+                break;
+            }
+        }
 		if(deserializeTo == nil) {
 			output = [Soap deserialize:element];
 		} else {
