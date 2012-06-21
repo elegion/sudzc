@@ -119,12 +119,12 @@
 
 // Called when the HTTP socket gets a response.
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    [self.receivedData setLength:0];
+		[self.receivedData setLength:0];
 }
 
 // Called when the HTTP socket received data.
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)value {
-    [self.receivedData appendData:value];
+		[self.receivedData appendData:value];
 }
 
 // Called when the HTTP request fails.
@@ -166,33 +166,36 @@
 	} else {
 				//TODO: use soap evenlope scheme + name, instead of localName "Body" hack in Soap.m
 
-        CXMLNode* body = [Soap getNode: [doc rootElement] withName: @"Body"];
-        CXMLNode* element;
-        for (CXMLNode *bodyChild in body.children) {
-            if (bodyChild.kind == CXMLElementKind) {
-                element = bodyChild;
-                break;
-            }
-        }
+				CXMLNode* body = [Soap getNode: [doc rootElement] withName: @"Body"];
+				CXMLNode* element;
+				for (CXMLNode *bodyChild in body.children) {
+						if (bodyChild.kind == CXMLElementKind) {
+								element = bodyChild;
+								break;
+						}
+				}
 		if(deserializeTo == nil) {
 			output = [Soap deserialize:element];
 		} else {
-            NSMutableArray* outputs = [[[NSMutableArray alloc] init] autorelease];
-            for (CXMLNode* child in element.children) {
-                id item = nil;
-                if([deserializeTo respondsToSelector: @selector(initWithNode:)]) {
-                    item = [[[[deserializeTo class] alloc] initWithNode: child] autorelease];
-                } else {
-                    item = [Soap convert: [[child childAtIndex:0] stringValue] toType: [[deserializeTo class] alloc]];
-                }
-                [outputs addObject:item];
-            }
-            output = outputs.count > 1 ? outputs : outputs.count > 0 ? [outputs objectAtIndex:0] : nil;
+						NSMutableArray* outputs = [[[NSMutableArray alloc] init] autorelease];
+						for (CXMLNode* child in element.children) {
+							if (child.kind == CXMLElementKind) {
+
+									id item = nil;
+									if([deserializeTo respondsToSelector: @selector(initWithNode:)]) {
+											item = [[[[deserializeTo class] alloc] initWithNode: child] autorelease];
+									} else {
+											item = [Soap convert: [[child childAtIndex:0] stringValue] toType: [[deserializeTo class] alloc]];
+									}
+									[outputs addObject:item];
+								}
+						}
+						output = outputs.count > 1 ? outputs : outputs.count > 0 ? [outputs objectAtIndex:0] : nil;
 		}
 		
 		if(self.action == nil) { self.action = @selector(onload:); }
 		if(self.handler != nil && [self.handler respondsToSelector: self.action]) {
- 			[self.handler performSelector: self.action withObject: output];
+			[self.handler performSelector: self.action withObject: output];
 		} else if(self.defaultHandler != nil && [self.defaultHandler respondsToSelector:@selector(onload:)]) {
 			[self.defaultHandler onload:output];
 		}
@@ -209,13 +212,13 @@
 -(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	if([challenge previousFailureCount] == 0) {
 		NSURLCredential *newCredential;
-        newCredential=[NSURLCredential credentialWithUser:self.username password:self.password persistence:NSURLCredentialPersistenceNone];
-        [[challenge sender] useCredential:newCredential forAuthenticationChallenge:challenge];
-    } else {
-        [[challenge sender] cancelAuthenticationChallenge:challenge];
+				newCredential=[NSURLCredential credentialWithUser:self.username password:self.password persistence:NSURLCredentialPersistenceNone];
+				[[challenge sender] useCredential:newCredential forAuthenticationChallenge:challenge];
+		} else {
+				[[challenge sender] cancelAuthenticationChallenge:challenge];
 		NSError* error = [NSError errorWithDomain:@"SoapRequest" code:403 userInfo: [NSDictionary dictionaryWithObjectsAndKeys: @"Could not authenticate this request", NSLocalizedDescriptionKey,nil]];
 		[self handleError:error];
-    }
+		}
 }
 
 // Cancels the HTTP request.
