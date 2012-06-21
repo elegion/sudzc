@@ -398,7 +398,8 @@
 	CXMLNode* child = nil;
 	
 	// If it's an attribute get it
-	if([node isKindOfClass: [CXMLElement class]])
+	
+	if(![name isEqualToString:@"type"] && [node isKindOfClass: [CXMLElement class]])
 	{
 		child = [(CXMLElement*)node attributeForName: name];
 		if(child != nil) {
