@@ -240,7 +240,7 @@
 	
 	// Get the type
     
-	NSString* type; 
+	NSString* type = nil; 
     if ([element isKindOfClass: [CXMLElement class]]) {
         type = [[(CXMLElement*)element attributeForName: @"type"] stringValue];
     }
