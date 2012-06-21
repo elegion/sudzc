@@ -239,7 +239,11 @@
 + (id) deserialize: (CXMLNode*) element{
 	
 	// Get the type
-	NSString* type = [Soap getNodeValue:element withName:@"type"];
+    
+	NSString* type; 
+    if ([element isKindOfClass: [CXMLElement class]]) {
+        type = [[(CXMLElement*)element attributeForName: @"type"] stringValue];
+    }
 	if(type == nil || type.length == 0) {
 		if([element children].count < 1) {
 			return [element stringValue];
