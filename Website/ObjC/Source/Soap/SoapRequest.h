@@ -20,8 +20,9 @@
 	SEL action;
 	BOOL logging;
 	id<SoapDelegate> defaultHandler;
+    
 }
-
+@property (retain, nonatomic) NSDictionary* responseHeaders;
 @property (retain, nonatomic) NSURL* url;
 @property (retain, nonatomic) NSString* soapAction;
 @property (retain, nonatomic) NSString* username;

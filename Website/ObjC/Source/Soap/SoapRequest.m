@@ -11,7 +11,7 @@
 
 @implementation SoapRequest
 
-@synthesize handler, url, soapAction, postData, receivedData, username, password, deserializeTo, action, logging, defaultHandler;
+@synthesize handler, url, soapAction, postData, receivedData, username, password, deserializeTo, action, logging, defaultHandler, responseHeaders;
 
 // Creates a request to submit from discrete values.
 + (SoapRequest*) create: (SoapHandler*) handler urlString: (NSString*) urlString soapAction: (NSString*) soapAction postData: (NSString*) postData deserializeTo: (id) deserializeTo {
@@ -119,6 +119,7 @@
 
 // Called when the HTTP socket gets a response.
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+        self.responseHeaders = [((NSHTTPURLResponse*)response) allHeaderFields];
 		[self.receivedData setLength:0];
 }
 
@@ -239,6 +240,7 @@
 	[password release];
 	[deserializeTo release];
 	[postData release];
+    [responseHeaders release];
 	[super dealloc];
 }
 
