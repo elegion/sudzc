@@ -464,7 +464,7 @@
 		[formatter setLocale: enUS];
 		[enUS release];
 		[formatter setLenient: YES];
-		[formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS"];
+		[formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
 	}
 	return formatter;
 }
@@ -477,6 +477,14 @@
 	if([value rangeOfString:@"."].length != 1) {
 		value = [NSString stringWithFormat:@"%@.000", value];
 	}
+    //Strip ":" from timezone if any
+    if ([value rangeOfString:@":" options:0 range:NSMakeRange(25, [value length] - 25)].length>0) {
+        value = [value stringByReplacingOccurrencesOfString:@":" 
+                                                           withString:@"" 
+                                                              options:0
+                                                                range:NSMakeRange(25, [value length] - 25)];
+    };
+    //remove: from timezone
 	if(value == nil || [value isEqualToString:@""]) { return nil; }
 	NSDate* outputDate = [[Soap dateFormatter] dateFromString: value];
 	return outputDate;
